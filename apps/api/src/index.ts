@@ -1,6 +1,7 @@
 import "dotenv/config";
 import Fastify from "fastify";
 import cors from "@fastify/cors";
+import cookie from "@fastify/cookie";
 import {
 	fastifyTRPCPlugin,
 	type FastifyTRPCPluginOptions,
@@ -8,6 +9,7 @@ import {
 import { getEnv } from "./config/env";
 import { createContext, type Context } from "./context";
 import { appRouter, type AppRouter } from "./trpc/router";
+import { setupRouter } from "./routes/setup.router";
 
 const env = getEnv();
 
@@ -18,11 +20,17 @@ const server = Fastify({
 	maxParamLength: 5000,
 });
 
+// Register cookie plugin
+await server.register(cookie);
+
 // Register CORS
 await server.register(cors, {
-	origin: env.NODE_ENV === "development" ? "http://localhost:5173" : false,
+	origin: env.NODE_ENV === "development" ? ["http://localhost:5173", "http://localhost:5174"] : false,
 	credentials: true,
 });
+
+// Register setup routes (must come before tRPC)
+await server.register(setupRouter);
 
 // Register tRPC
 await server.register(fastifyTRPCPlugin<AppRouter>, {

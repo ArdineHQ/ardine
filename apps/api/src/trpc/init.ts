@@ -7,5 +7,7 @@ const t = initTRPC.context<Context>().create({
 });
 
 export const router = t.router;
-export const publicProcedure = t.procedure;
 export const middleware = t.middleware;
+
+// Public procedure (no auth required)
+export const publicProcedure = t.procedure;

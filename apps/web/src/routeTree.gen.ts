@@ -10,20 +10,39 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TimesheetsRouteImport } from './routes/timesheets'
+import { Route as RegisterRouteImport } from './routes/register'
 import { Route as ProjectsRouteImport } from './routes/projects'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as InvoicesRouteImport } from './routes/invoices'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as ClientsRouteImport } from './routes/clients'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ProjectsNewRouteImport } from './routes/projects_.new'
+import { Route as ProjectsProjectIdRouteImport } from './routes/projects_.$projectId'
+import { Route as ClientsNewRouteImport } from './routes/clients_.new'
+import { Route as ClientsClientIdRouteImport } from './routes/clients_.$clientId'
+import { Route as AdminUsersRouteImport } from './routes/admin.users'
+import { Route as ProjectsProjectIdEditRouteImport } from './routes/projects_.$projectId_.edit'
+import { Route as ClientsClientIdEditRouteImport } from './routes/clients_.$clientId.edit'
 
 const TimesheetsRoute = TimesheetsRouteImport.update({
   id: '/timesheets',
   path: '/timesheets',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RegisterRoute = RegisterRouteImport.update({
+  id: '/register',
+  path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProjectsRoute = ProjectsRouteImport.update({
   id: '/projects',
   path: '/projects',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const InvoicesRoute = InvoicesRouteImport.update({
@@ -46,22 +65,75 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProjectsNewRoute = ProjectsNewRouteImport.update({
+  id: '/projects_/new',
+  path: '/projects/new',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProjectsProjectIdRoute = ProjectsProjectIdRouteImport.update({
+  id: '/projects_/$projectId',
+  path: '/projects/$projectId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ClientsNewRoute = ClientsNewRouteImport.update({
+  id: '/clients_/new',
+  path: '/clients/new',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ClientsClientIdRoute = ClientsClientIdRouteImport.update({
+  id: '/clients_/$clientId',
+  path: '/clients/$clientId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminUsersRoute = AdminUsersRouteImport.update({
+  id: '/admin/users',
+  path: '/admin/users',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProjectsProjectIdEditRoute = ProjectsProjectIdEditRouteImport.update({
+  id: '/projects_/$projectId_/edit',
+  path: '/projects/$projectId/edit',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ClientsClientIdEditRoute = ClientsClientIdEditRouteImport.update({
+  id: '/edit',
+  path: '/edit',
+  getParentRoute: () => ClientsClientIdRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/clients': typeof ClientsRoute
   '/dashboard': typeof DashboardRoute
   '/invoices': typeof InvoicesRoute
+  '/login': typeof LoginRoute
   '/projects': typeof ProjectsRoute
+  '/register': typeof RegisterRoute
   '/timesheets': typeof TimesheetsRoute
+  '/admin/users': typeof AdminUsersRoute
+  '/clients/$clientId': typeof ClientsClientIdRouteWithChildren
+  '/clients/new': typeof ClientsNewRoute
+  '/projects/$projectId': typeof ProjectsProjectIdRoute
+  '/projects/new': typeof ProjectsNewRoute
+  '/clients/$clientId/edit': typeof ClientsClientIdEditRoute
+  '/projects/$projectId/edit': typeof ProjectsProjectIdEditRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/clients': typeof ClientsRoute
   '/dashboard': typeof DashboardRoute
   '/invoices': typeof InvoicesRoute
+  '/login': typeof LoginRoute
   '/projects': typeof ProjectsRoute
+  '/register': typeof RegisterRoute
   '/timesheets': typeof TimesheetsRoute
+  '/admin/users': typeof AdminUsersRoute
+  '/clients/$clientId': typeof ClientsClientIdRouteWithChildren
+  '/clients/new': typeof ClientsNewRoute
+  '/projects/$projectId': typeof ProjectsProjectIdRoute
+  '/projects/new': typeof ProjectsNewRoute
+  '/clients/$clientId/edit': typeof ClientsClientIdEditRoute
+  '/projects/$projectId/edit': typeof ProjectsProjectIdEditRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -69,8 +141,17 @@ export interface FileRoutesById {
   '/clients': typeof ClientsRoute
   '/dashboard': typeof DashboardRoute
   '/invoices': typeof InvoicesRoute
+  '/login': typeof LoginRoute
   '/projects': typeof ProjectsRoute
+  '/register': typeof RegisterRoute
   '/timesheets': typeof TimesheetsRoute
+  '/admin/users': typeof AdminUsersRoute
+  '/clients_/$clientId': typeof ClientsClientIdRouteWithChildren
+  '/clients_/new': typeof ClientsNewRoute
+  '/projects_/$projectId': typeof ProjectsProjectIdRoute
+  '/projects_/new': typeof ProjectsNewRoute
+  '/clients_/$clientId/edit': typeof ClientsClientIdEditRoute
+  '/projects_/$projectId_/edit': typeof ProjectsProjectIdEditRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -79,24 +160,51 @@ export interface FileRouteTypes {
     | '/clients'
     | '/dashboard'
     | '/invoices'
+    | '/login'
     | '/projects'
+    | '/register'
     | '/timesheets'
+    | '/admin/users'
+    | '/clients/$clientId'
+    | '/clients/new'
+    | '/projects/$projectId'
+    | '/projects/new'
+    | '/clients/$clientId/edit'
+    | '/projects/$projectId/edit'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/clients'
     | '/dashboard'
     | '/invoices'
+    | '/login'
     | '/projects'
+    | '/register'
     | '/timesheets'
+    | '/admin/users'
+    | '/clients/$clientId'
+    | '/clients/new'
+    | '/projects/$projectId'
+    | '/projects/new'
+    | '/clients/$clientId/edit'
+    | '/projects/$projectId/edit'
   id:
     | '__root__'
     | '/'
     | '/clients'
     | '/dashboard'
     | '/invoices'
+    | '/login'
     | '/projects'
+    | '/register'
     | '/timesheets'
+    | '/admin/users'
+    | '/clients_/$clientId'
+    | '/clients_/new'
+    | '/projects_/$projectId'
+    | '/projects_/new'
+    | '/clients_/$clientId/edit'
+    | '/projects_/$projectId_/edit'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -104,8 +212,16 @@ export interface RootRouteChildren {
   ClientsRoute: typeof ClientsRoute
   DashboardRoute: typeof DashboardRoute
   InvoicesRoute: typeof InvoicesRoute
+  LoginRoute: typeof LoginRoute
   ProjectsRoute: typeof ProjectsRoute
+  RegisterRoute: typeof RegisterRoute
   TimesheetsRoute: typeof TimesheetsRoute
+  AdminUsersRoute: typeof AdminUsersRoute
+  ClientsClientIdRoute: typeof ClientsClientIdRouteWithChildren
+  ClientsNewRoute: typeof ClientsNewRoute
+  ProjectsProjectIdRoute: typeof ProjectsProjectIdRoute
+  ProjectsNewRoute: typeof ProjectsNewRoute
+  ProjectsProjectIdEditRoute: typeof ProjectsProjectIdEditRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -117,11 +233,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TimesheetsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/register': {
+      id: '/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/projects': {
       id: '/projects'
       path: '/projects'
       fullPath: '/projects'
       preLoaderRoute: typeof ProjectsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/invoices': {
@@ -152,26 +282,86 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/projects_/new': {
+      id: '/projects_/new'
+      path: '/projects/new'
+      fullPath: '/projects/new'
+      preLoaderRoute: typeof ProjectsNewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/projects_/$projectId': {
+      id: '/projects_/$projectId'
+      path: '/projects/$projectId'
+      fullPath: '/projects/$projectId'
+      preLoaderRoute: typeof ProjectsProjectIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/clients_/new': {
+      id: '/clients_/new'
+      path: '/clients/new'
+      fullPath: '/clients/new'
+      preLoaderRoute: typeof ClientsNewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/clients_/$clientId': {
+      id: '/clients_/$clientId'
+      path: '/clients/$clientId'
+      fullPath: '/clients/$clientId'
+      preLoaderRoute: typeof ClientsClientIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/users': {
+      id: '/admin/users'
+      path: '/admin/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminUsersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/projects_/$projectId_/edit': {
+      id: '/projects_/$projectId_/edit'
+      path: '/projects/$projectId/edit'
+      fullPath: '/projects/$projectId/edit'
+      preLoaderRoute: typeof ProjectsProjectIdEditRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/clients_/$clientId/edit': {
+      id: '/clients_/$clientId/edit'
+      path: '/edit'
+      fullPath: '/clients/$clientId/edit'
+      preLoaderRoute: typeof ClientsClientIdEditRouteImport
+      parentRoute: typeof ClientsClientIdRoute
+    }
   }
 }
+
+interface ClientsClientIdRouteChildren {
+  ClientsClientIdEditRoute: typeof ClientsClientIdEditRoute
+}
+
+const ClientsClientIdRouteChildren: ClientsClientIdRouteChildren = {
+  ClientsClientIdEditRoute: ClientsClientIdEditRoute,
+}
+
+const ClientsClientIdRouteWithChildren = ClientsClientIdRoute._addFileChildren(
+  ClientsClientIdRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ClientsRoute: ClientsRoute,
   DashboardRoute: DashboardRoute,
   InvoicesRoute: InvoicesRoute,
+  LoginRoute: LoginRoute,
   ProjectsRoute: ProjectsRoute,
+  RegisterRoute: RegisterRoute,
   TimesheetsRoute: TimesheetsRoute,
+  AdminUsersRoute: AdminUsersRoute,
+  ClientsClientIdRoute: ClientsClientIdRouteWithChildren,
+  ClientsNewRoute: ClientsNewRoute,
+  ProjectsProjectIdRoute: ProjectsProjectIdRoute,
+  ProjectsNewRoute: ProjectsNewRoute,
+  ProjectsProjectIdEditRoute: ProjectsProjectIdEditRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-  }
-}

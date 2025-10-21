@@ -4,7 +4,7 @@ export const invoiceStatusSchema = z.enum(["draft", "sent", "paid", "cancelled"]
 
 export const invoiceSchema = z.object({
 	id: z.string().uuid(),
-	userId: z.string().uuid(),
+	teamId: z.string().uuid(),
 	clientId: z.string().uuid(),
 	invoiceNumber: z.string(),
 	status: invoiceStatusSchema,
@@ -47,8 +47,24 @@ export const updateInvoiceSchema = z.object({
 	notes: z.string().optional(),
 });
 
+// Invoice list query
+export const invoiceListQuerySchema = z
+	.object({
+		q: z.string().max(120).optional(),
+		clientId: z.string().uuid().optional(),
+		status: z.enum(["all", "draft", "sent", "paid", "overdue"]).default("all"),
+		limit: z.number().int().min(1).max(100).default(20),
+		cursor: z.string().uuid().optional(),
+	})
+	.optional()
+	.default({
+		status: "all",
+		limit: 20,
+	});
+
 export type Invoice = z.infer<typeof invoiceSchema>;
 export type InvoiceItem = z.infer<typeof invoiceItemSchema>;
 export type InvoiceStatus = z.infer<typeof invoiceStatusSchema>;
 export type CreateInvoice = z.infer<typeof createInvoiceSchema>;
 export type UpdateInvoice = z.infer<typeof updateInvoiceSchema>;
+export type InvoiceListQuery = z.infer<typeof invoiceListQuerySchema>;

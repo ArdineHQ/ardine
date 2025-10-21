@@ -18,8 +18,10 @@
 	"dependencies": {
 		"@ardine/db": "workspace:*",
 		"@ardine/shared": "workspace:*",
+		"@fastify/cookie": "^11.0.2",
 		"@fastify/cors": "^10.0.1",
 		"@trpc/server": "^11.4.3",
+		"bcrypt": "^6.0.0",
 		"dotenv": "^16.4.7",
 		"fastify": "^5.2.3",
 		"superjson": "^2.2.2",
@@ -27,6 +29,7 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^2.2.4",
+		"@types/bcrypt": "^6.0.0",
 		"@types/node": "^22.10.2",
 		"tsx": "^4.19.2",
 		"typescript": "^5.7.2",

@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const timeEntrySchema = z.object({
 	id: z.string().uuid(),
-	userId: z.string().uuid(),
+	teamId: z.string().uuid(),
 	projectId: z.string().uuid(),
 	description: z.string().nullable(),
 	startTime: z.date(),
