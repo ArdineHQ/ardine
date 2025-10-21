@@ -1,20 +1,17 @@
 import { createPool } from "slonik";
-import { createQueryNormalisationInterceptor } from "slonik-interceptor-query-normalisation";
 import { getDbConfig } from "./config";
 import type { DatabasePool } from "slonik";
 
 let pool: DatabasePool | null = null;
 
-export const getPool = (): DatabasePool => {
+export const getPool = async (): Promise<DatabasePool> => {
 	if (pool) {
 		return pool;
 	}
 
 	const config = getDbConfig();
 
-	pool = createPool(config.DATABASE_URL, {
-		interceptors: [createQueryNormalisationInterceptor()],
-	});
+	pool = await createPool(config.DATABASE_URL);
 
 	return pool;
 };

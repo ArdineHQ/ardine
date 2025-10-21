@@ -28,6 +28,7 @@
 		"@tanstack/react-start": "^1.132.0",
 		"@tanstack/router-plugin": "^1.132.0",
 		"@trpc/client": "^11.4.3",
+		"@trpc/react-query": "^11.6.0",
 		"@trpc/tanstack-react-query": "^11.4.3",
 		"lucide-react": "^0.544.0",
 		"react": "^19.2.0",

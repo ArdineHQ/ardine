@@ -1,15 +1,15 @@
 import "dotenv/config";
-import { sql } from "slonik";
-import { getPool, closePool } from "../pool/pool";
+import pg from "pg";
+import { getDbConfig } from "../pool/config";
 
-async function seed() {
-	const pool = getPool();
+const { Pool } = pg;
 
+async function seed(pool: pg.Pool) {
 	console.log("Seeding database...");
 
 	// Example seed - create a demo user
-	// Note: In production, you'd hash passwords properly
-	await pool.query(sql.unsafe`
+	// Note: In production, you'd hash passwords properly with bcrypt
+	await pool.query(`
 		INSERT INTO users (id, email, name, password_hash)
 		VALUES (
 			gen_random_uuid(),
@@ -24,13 +24,19 @@ async function seed() {
 }
 
 async function main() {
+	const config = getDbConfig();
+
+	const pool = new Pool({
+		connectionString: config.DATABASE_URL,
+	});
+
 	try {
-		await seed();
+		await seed(pool);
 	} catch (error) {
 		console.error("Seed failed:", error);
 		process.exit(1);
 	} finally {
-		await closePool();
+		await pool.end();
 	}
 }
 

@@ -1,10 +1,11 @@
 import { createRootRoute, Outlet, Link } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { RootProvider } from "@/integrations/tanstack-query/root-provider";
-import "@ardine/ui/styles.css";
+import appCss from "../styles.css?url";
 
 export const Route = createRootRoute({
 	component: RootComponent,
+	links: () => [{ rel: "stylesheet", href: appCss }],
 });
 
 function RootComponent() {
@@ -15,6 +16,7 @@ function RootComponent() {
 					<meta charSet="UTF-8" />
 					<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 					<title>Ardine - Time Tracking & Invoicing</title>
+					<link rel="stylesheet" href={appCss} />
 				</head>
 				<body>
 					<div className="min-h-screen bg-background">
