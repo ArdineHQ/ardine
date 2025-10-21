@@ -1,4 +1,5 @@
-import { createTRPCReact, httpBatchLink } from "@trpc/client/react";
+import { createTRPCReact } from "@trpc/react-query";
+import { httpBatchLink } from "@trpc/client";
 import superjson from "superjson";
 import type { AppRouter } from "@ardine/api/src/trpc/router";
 

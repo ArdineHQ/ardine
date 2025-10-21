@@ -16,7 +16,7 @@ export const createContext = async ({
 	req: FastifyRequest;
 	res: FastifyReply;
 }): Promise<Context> => {
-	const pool = getPool();
+	const pool = await getPool();
 
 	// TODO: Extract userId from session/JWT when auth is implemented
 	const userId = undefined;

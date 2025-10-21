@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
-@source "../../apps/web/src/**/*.{ts,tsx}";
-@source "../src/**/*.{ts,tsx}";
+@source "./**/*.{ts,tsx}";
+@source "../../../packages/ui/src/**/*.{ts,tsx}";
 
 @theme {
 	--color-background: hsl(0 0% 100%);

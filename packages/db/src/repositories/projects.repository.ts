@@ -15,7 +15,7 @@ export class ProjectsRepository {
 			ORDER BY created_at DESC
 		`);
 
-		return result.rows;
+		return [...result.rows];
 	}
 
 	async findById(id: string, userId: string): Promise<Project | null> {

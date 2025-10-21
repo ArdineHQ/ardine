@@ -1,8 +1,10 @@
 import "dotenv/config";
 import { readdir, readFile } from "node:fs/promises";
 import { join } from "node:path";
-import { sql } from "slonik";
-import { getPool, closePool } from "../pool/pool";
+import pg from "pg";
+import { getDbConfig } from "../pool/config";
+
+const { Pool } = pg;
 
 interface Migration {
 	name: string;
@@ -31,9 +33,8 @@ async function loadMigrations(): Promise<Migration[]> {
 	return migrations;
 }
 
-async function createMigrationsTable() {
-	const pool = getPool();
-	await pool.query(sql.unsafe`
+async function createMigrationsTable(pool: pg.Pool) {
+	await pool.query(`
 		CREATE TABLE IF NOT EXISTS migrations (
 			id SERIAL PRIMARY KEY,
 			name VARCHAR(255) NOT NULL UNIQUE,
@@ -42,30 +43,24 @@ async function createMigrationsTable() {
 	`);
 }
 
-async function getExecutedMigrations(): Promise<string[]> {
-	const pool = getPool();
-	const result = await pool.query(
-		sql.unsafe`SELECT name FROM migrations ORDER BY id`,
-	);
-	return result.rows.map((row) => (row as { name: string }).name);
+async function getExecutedMigrations(pool: pg.Pool): Promise<string[]> {
+	const result = await pool.query("SELECT name FROM migrations ORDER BY id");
+	return result.rows.map((row) => row.name);
 }
 
-async function markMigrationExecuted(name: string) {
-	const pool = getPool();
-	await pool.query(sql.unsafe`INSERT INTO migrations (name) VALUES (${name})`);
+async function markMigrationExecuted(pool: pg.Pool, name: string) {
+	await pool.query("INSERT INTO migrations (name) VALUES ($1)", [name]);
 }
 
-async function markMigrationReverted(name: string) {
-	const pool = getPool();
-	await pool.query(sql.unsafe`DELETE FROM migrations WHERE name = ${name}`);
+async function markMigrationReverted(pool: pg.Pool, name: string) {
+	await pool.query("DELETE FROM migrations WHERE name = $1", [name]);
 }
 
-async function migrateUp() {
-	const pool = getPool();
-	await createMigrationsTable();
+async function migrateUp(pool: pg.Pool) {
+	await createMigrationsTable(pool);
 
 	const allMigrations = await loadMigrations();
-	const executedMigrations = await getExecutedMigrations();
+	const executedMigrations = await getExecutedMigrations(pool);
 
 	const pendingMigrations = allMigrations.filter(
 		(m) => !executedMigrations.includes(m.name),
@@ -78,20 +73,19 @@ async function migrateUp() {
 
 	for (const migration of pendingMigrations) {
 		console.log(`Running migration: ${migration.name}`);
-		await pool.query(sql.unsafe`${migration.up}`);
-		await markMigrationExecuted(migration.name);
+		await pool.query(migration.up);
+		await markMigrationExecuted(pool, migration.name);
 		console.log(`✓ ${migration.name}`);
 	}
 
 	console.log(`\nExecuted ${pendingMigrations.length} migration(s).`);
 }
 
-async function migrateDown() {
-	const pool = getPool();
-	await createMigrationsTable();
+async function migrateDown(pool: pg.Pool) {
+	await createMigrationsTable(pool);
 
 	const allMigrations = await loadMigrations();
-	const executedMigrations = await getExecutedMigrations();
+	const executedMigrations = await getExecutedMigrations(pool);
 
 	if (executedMigrations.length === 0) {
 		console.log("No migrations to revert.");
@@ -106,19 +100,24 @@ async function migrateDown() {
 	}
 
 	console.log(`Reverting migration: ${migration.name}`);
-	await pool.query(sql.unsafe`${migration.down}`);
-	await markMigrationReverted(migration.name);
+	await pool.query(migration.down);
+	await markMigrationReverted(pool, migration.name);
 	console.log(`✓ Reverted ${migration.name}`);
 }
 
 async function main() {
 	const command = process.argv[2];
+	const config = getDbConfig();
+
+	const pool = new Pool({
+		connectionString: config.DATABASE_URL,
+	});
 
 	try {
 		if (command === "up") {
-			await migrateUp();
+			await migrateUp(pool);
 		} else if (command === "down") {
-			await migrateDown();
+			await migrateDown(pool);
 		} else {
 			console.error("Usage: tsx migrate.ts [up|down]");
 			process.exit(1);
@@ -127,7 +126,7 @@ async function main() {
 		console.error("Migration failed:", error);
 		process.exit(1);
 	} finally {
-		await closePool();
+		await pool.end();
 	}
 }
 
