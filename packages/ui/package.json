@@ -1,0 +1,37 @@
+{
+	"name": "@ardine/ui",
+	"version": "0.1.0",
+	"private": true,
+	"type": "module",
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"import": "./dist/index.js",
+			"types": "./dist/index.d.ts"
+		},
+		"./styles.css": "./src/styles.css"
+	},
+	"scripts": {
+		"build": "tsc",
+		"dev": "tsc --watch",
+		"clean": "rm -rf dist",
+		"typecheck": "tsc --noEmit",
+		"lint": "biome lint src",
+		"format": "biome format src",
+		"check": "biome check src"
+	},
+	"dependencies": {
+		"@radix-ui/react-slot": "^1.1.1",
+		"class-variance-authority": "^0.7.1",
+		"clsx": "^2.1.1",
+		"lucide-react": "^0.544.0",
+		"react": "^19.2.0",
+		"tailwind-merge": "^3.0.2"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^2.2.4",
+		"@types/react": "^19.2.0",
+		"typescript": "^5.7.2"
+	}
+}

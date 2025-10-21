@@ -1,0 +1,12 @@
+{
+	"name": "@ardine/worker",
+	"version": "0.1.0",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"dev": "echo 'Worker stub - not implemented yet'",
+		"build": "echo 'Worker stub - not implemented yet'",
+		"start": "echo 'Worker stub - not implemented yet'"
+	},
+	"description": "Background worker for async jobs (future implementation)"
+}

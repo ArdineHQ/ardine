@@ -1,0 +1,41 @@
+{
+	"name": "@ardine/db",
+	"version": "0.1.0",
+	"private": true,
+	"type": "module",
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"import": "./dist/index.js",
+			"types": "./dist/index.d.ts"
+		}
+	},
+	"scripts": {
+		"build": "tsc",
+		"dev": "tsc --watch",
+		"clean": "rm -rf dist",
+		"typecheck": "tsc --noEmit",
+		"migrate:up": "tsx src/scripts/migrate.ts up",
+		"migrate:down": "tsx src/scripts/migrate.ts down",
+		"migrate:create": "tsx src/scripts/create-migration.ts",
+		"seed": "tsx src/scripts/seed.ts",
+		"lint": "biome lint src",
+		"format": "biome format src",
+		"check": "biome check src"
+	},
+	"dependencies": {
+		"@ardine/shared": "workspace:*",
+		"dotenv": "^16.4.7",
+		"pg": "^8.13.1",
+		"slonik": "^45.6.0",
+		"slonik-interceptor-query-normalisation": "^1.1.10",
+		"zod": "^3.25.76"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^2.2.4",
+		"@types/pg": "^8.11.10",
+		"tsx": "^4.19.2",
+		"typescript": "^5.7.2"
+	}
+}
