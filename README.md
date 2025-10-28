@@ -63,7 +63,7 @@ The fastest way to get Ardine up and running:
 
 ```bash
 # 1. Clone the repository
-git clone <repository-url>
+git clone https://github.com/ardinehq/ardine.git
 cd ardine
 
 # 2. Set up environment variables
