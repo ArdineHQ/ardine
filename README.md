@@ -26,7 +26,6 @@ Ardine is a comprehensive solution for freelancers and small teams to manage the
 - **Team Workspaces** - Isolated data spaces for different organizations
 - **Role-Based Access Control** - Instance, team, and project-level permissions
 - **GraphQL API** - Modern API for flexible data queries
-- **RESTful Endpoints** - Traditional REST API for standard operations
 
 ## Technology Stack
 
@@ -328,7 +327,7 @@ npm run codegen
 ### Inviting Users to a Team
 Since email sending is not yet implemented, team invitations work via shareable links:
 
-1. Navigate to Team Settings (or `/admin/teams` for admins)
+1. Navigate to Team Settings
 2. Enter the user's email address in the invite form
 3. **Click the "Copy Invite Link" button** (email won't be sent automatically)
 4. Share the copied invite link directly with the user (via Slack, email client, etc.)
