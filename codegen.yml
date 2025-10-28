@@ -1,0 +1,33 @@
+overwrite: true
+schema: "http://localhost:3000/api/graphql"
+documents: "graphql/**/*.graphql"
+generates:
+  graphql/generated/graphql.ts:
+    plugins:
+      - "typescript"
+      - "typescript-operations"
+      - "typescript-resolvers"
+    config:
+      # Type safety
+      strictScalars: true
+      useTypeImports: true
+
+      # Scalars mapping
+      scalars:
+        DateTime: Date
+        JSON: any
+
+      # Resolver types
+      contextType: "@/graphql/context#GraphQLContext"
+      mappers:
+        Team: "@/graphql/types#Team"
+        User: "@/graphql/types#User"
+        Client: "@/graphql/types#Client"
+        Project: "@/graphql/types#Project"
+        Task: "@/graphql/types#ProjectTask"
+        TimeEntry: "@/graphql/types#TimeEntry"
+        Invoice: "@/graphql/types#Invoice"
+        InvoiceItem: "@/graphql/types#InvoiceItem"
+        ProjectMember: "@/graphql/types#ProjectMember"
+        TaskAssignee: "@/graphql/types#TaskAssignee"
+        PageInfo: "@/graphql/types#PageInfo"

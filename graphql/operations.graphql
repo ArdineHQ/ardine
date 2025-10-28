@@ -1,0 +1,656 @@
+# Example GraphQL operations for common UI screens
+
+# ============================================================================
+# CLIENTS
+# ============================================================================
+
+# List clients with pagination and filters
+query ListClients($args: ListArgs!) {
+  clients(args: $args) {
+    nodes {
+      id
+      name
+      email
+      phone
+      contactName
+      defaultHourlyRateCents
+      currency
+      archivedAt
+      createdAt
+      updatedAt
+    }
+    total
+    pageInfo {
+      hasNextPage
+      nextOffset
+    }
+  }
+}
+
+# Get single client with nested data
+query GetClient($id: ID!, $teamId: ID) {
+  client(id: $id, teamId: $teamId) {
+    id
+    name
+    email
+    phone
+    contactName
+    billingAddress
+    taxId
+    defaultHourlyRateCents
+    currency
+    notes
+    archivedAt
+    createdAt
+    updatedAt
+
+    # Nested projects with counts
+    projects(limit: 10, order: desc) {
+      nodes {
+        id
+        name
+        status
+        code
+        color
+        createdAt
+      }
+      total
+      pageInfo {
+        hasNextPage
+      }
+    }
+
+    # Recent invoices
+    invoices(limit: 5, order: desc) {
+      nodes {
+        id
+        invoiceNumber
+        status
+        issuedDate
+        dueDate
+        totalCents
+      }
+      total
+    }
+  }
+}
+
+# Search clients for typeahead
+query SearchClients($teamId: ID!, $q: String!, $limit: Int = 10) {
+  searchClients(teamId: $teamId, q: $q, limit: $limit) {
+    id
+    name
+    email
+  }
+}
+
+# Create client
+mutation CreateClient($input: ClientInput!) {
+  createClient(input: $input) {
+    id
+    name
+    email
+    phone
+    contactName
+    teamId
+    createdAt
+  }
+}
+
+# Update client
+mutation UpdateClient($id: ID!, $input: ClientPatch!) {
+  updateClient(id: $id, input: $input) {
+    id
+    name
+    email
+    phone
+    contactName
+    updatedAt
+  }
+}
+
+# Archive/Unarchive client
+mutation ArchiveClient($id: ID!) {
+  archiveClient(id: $id) {
+    id
+    archivedAt
+  }
+}
+
+mutation UnarchiveClient($id: ID!) {
+  unarchiveClient(id: $id) {
+    id
+    archivedAt
+  }
+}
+
+# Delete client
+mutation DeleteClient($id: ID!) {
+  deleteClient(id: $id)
+}
+
+# ============================================================================
+# TEAM MEMBERS
+# ============================================================================
+
+# Get team members
+query GetTeamMembersForProject($teamId: ID!) {
+  teamMembers(teamId: $teamId) {
+    id
+    user {
+      id
+      name
+      email
+      displayName
+    }
+  }
+}
+
+# ============================================================================
+# PROJECTS
+# ============================================================================
+
+# List projects with filters
+query ListProjects($args: ListArgs!) {
+  projects(args: $args) {
+    nodes {
+      id
+      name
+      code
+      status
+      color
+      tags
+      startDate
+      dueDate
+      client {
+        id
+        name
+      }
+      createdAt
+    }
+    total
+    pageInfo {
+      hasNextPage
+      nextOffset
+    }
+  }
+}
+
+# Get project detail with tasks and members
+query GetProject($id: ID!) {
+  project(id: $id) {
+    id
+    name
+    description
+    code
+    status
+    color
+    tags
+    defaultHourlyRateCents
+    budgetType
+    budgetHours
+    budgetAmountCents
+    startDate
+    dueDate
+    archivedAt
+    createdAt
+    updatedAt
+
+    client {
+      id
+      name
+      email
+    }
+
+    tasks(limit: 50, order: asc) {
+      nodes {
+        id
+        name
+        description
+        status
+        billable
+        hourlyRateCents
+        tags
+        orderIndex
+        assignees {
+          id
+          user {
+            id
+            name
+            email
+          }
+        }
+      }
+      total
+    }
+
+    members {
+      id
+      role
+      user {
+        id
+        name
+        email
+        displayName
+      }
+    }
+  }
+}
+
+# Create project
+mutation CreateProject($input: ProjectInput!) {
+  createProject(input: $input) {
+    id
+    name
+    code
+    status
+    createdAt
+  }
+}
+
+# Update project
+mutation UpdateProject($id: ID!, $input: ProjectPatch!) {
+  updateProject(id: $id, input: $input) {
+    id
+    name
+    description
+    status
+    updatedAt
+  }
+}
+
+# Set project status
+mutation SetProjectStatus($id: ID!, $status: String!) {
+  setProjectStatus(id: $id, status: $status) {
+    id
+    status
+    updatedAt
+  }
+}
+
+# Add/Remove project members
+mutation AddProjectMember($projectId: ID!, $userId: ID!, $role: String!) {
+  addProjectMember(projectId: $projectId, userId: $userId, role: $role) {
+    id
+    role
+    user {
+      id
+      name
+      email
+      displayName
+    }
+  }
+}
+
+mutation RemoveProjectMember($id: ID!) {
+  removeProjectMember(id: $id)
+}
+
+# ============================================================================
+# TASKS
+# ============================================================================
+
+# Get a single task
+query GetTask($id: ID!) {
+  task(id: $id) {
+    id
+    name
+    description
+    status
+    billable
+    hourlyRateCents
+    tags
+    orderIndex
+    createdAt
+    updatedAt
+
+    project {
+      id
+      name
+      color
+    }
+
+    assignees {
+      id
+      user {
+        id
+        name
+        email
+        displayName
+      }
+    }
+  }
+}
+
+# List tasks for a project
+query ListTasks(
+  $projectId: ID!
+  $status: String
+  $offset: Int = 0
+  $limit: Int = 50
+  $orderBy: String
+  $order: String = "asc"
+) {
+  tasks(
+    projectId: $projectId
+    status: $status
+    offset: $offset
+    limit: $limit
+    orderBy: $orderBy
+    order: $order
+  ) {
+    nodes {
+      id
+      name
+      description
+      status
+      billable
+      hourlyRateCents
+      tags
+      orderIndex
+      createdAt
+      assignees {
+        id
+        user {
+          id
+          name
+          email
+        }
+      }
+    }
+    total
+    pageInfo {
+      hasNextPage
+      nextOffset
+    }
+  }
+}
+
+# Create task
+mutation CreateTask($projectId: ID!, $input: TaskInput!) {
+  createTask(projectId: $projectId, input: $input) {
+    id
+    name
+    description
+    status
+    billable
+    orderIndex
+    createdAt
+  }
+}
+
+# Update task
+mutation UpdateTask($id: ID!, $input: TaskPatch!) {
+  updateTask(id: $id, input: $input) {
+    id
+    name
+    description
+    status
+    billable
+    updatedAt
+  }
+}
+
+# Reorder tasks
+mutation ReorderTasks($projectId: ID!, $order: [ID!]!) {
+  reorderTasks(projectId: $projectId, order: $order)
+}
+
+# Add/Remove assignees
+mutation AddTaskAssignee($taskId: ID!, $userId: ID!) {
+  addTaskAssignee(taskId: $taskId, userId: $userId) {
+    id
+    user {
+      id
+      name
+    }
+  }
+}
+
+mutation RemoveTaskAssignee($id: ID!) {
+  removeTaskAssignee(id: $id)
+}
+
+# ============================================================================
+# TIME ENTRIES
+# ============================================================================
+
+# List time entries with filters
+query ListTimeEntries(
+  $teamId: ID!
+  $projectId: ID
+  $taskId: ID
+  $userId: ID
+  $clientId: ID
+  $from: DateTime
+  $to: DateTime
+  $billable: Boolean
+  $offset: Int = 0
+  $limit: Int = 50
+  $orderBy: String
+  $order: String = "desc"
+) {
+  timeEntries(
+    teamId: $teamId
+    projectId: $projectId
+    taskId: $taskId
+    userId: $userId
+    clientId: $clientId
+    from: $from
+    to: $to
+    billable: $billable
+    offset: $offset
+    limit: $limit
+    orderBy: $orderBy
+    order: $order
+  ) {
+    nodes {
+      id
+      note
+      startedAt
+      stoppedAt
+      durationSeconds
+      billable
+      hourlyRateCents
+      amountCents
+      project {
+        id
+        name
+        code
+      }
+      task {
+        id
+        name
+      }
+      user {
+        id
+        name
+      }
+    }
+    total
+    pageInfo {
+      hasNextPage
+      nextOffset
+    }
+  }
+}
+
+# Start/Stop timer
+mutation StartTimer(
+  $projectId: ID!
+  $taskId: ID
+  $note: String
+  $billable: Boolean = true
+) {
+  startTimer(
+    projectId: $projectId
+    taskId: $taskId
+    note: $note
+    billable: $billable
+  ) {
+    id
+    startedAt
+    note
+    billable
+  }
+}
+
+mutation StopTimer($timeEntryId: ID!) {
+  stopTimer(timeEntryId: $timeEntryId) {
+    id
+    stoppedAt
+    durationSeconds
+    amountCents
+  }
+}
+
+# ============================================================================
+# INVOICES
+# ============================================================================
+
+# List invoices
+query ListInvoices(
+  $teamId: ID!
+  $clientId: ID
+  $status: String
+  $from: DateTime
+  $to: DateTime
+  $offset: Int = 0
+  $limit: Int = 25
+  $orderBy: String
+  $order: String = "desc"
+) {
+  invoices(
+    teamId: $teamId
+    clientId: $clientId
+    status: $status
+    from: $from
+    to: $to
+    offset: $offset
+    limit: $limit
+    orderBy: $orderBy
+    order: $order
+  ) {
+    nodes {
+      id
+      invoiceNumber
+      status
+      issuedDate
+      dueDate
+      subtotalCents
+      taxAmountCents
+      totalCents
+      client {
+        id
+        name
+      }
+      createdAt
+    }
+    total
+    pageInfo {
+      hasNextPage
+      nextOffset
+    }
+  }
+}
+
+# Get invoice detail
+query GetInvoice($id: ID!) {
+  invoice(id: $id) {
+    id
+    invoiceNumber
+    status
+    issuedDate
+    dueDate
+    subtotalCents
+    taxRatePercent
+    taxAmountCents
+    totalCents
+    notes
+    createdAt
+    updatedAt
+
+    client {
+      id
+      name
+      email
+      contactName
+      billingAddress
+      taxId
+    }
+
+    items {
+      id
+      description
+      quantity
+      rateCents
+      amountCents
+      timeEntryId
+      createdAt
+    }
+  }
+}
+
+# Create invoice
+mutation CreateInvoice($input: InvoiceInput!) {
+  createInvoice(input: $input) {
+    id
+    invoiceNumber
+    status
+    issuedDate
+    dueDate
+    createdAt
+  }
+}
+
+# Update invoice
+mutation UpdateInvoice($id: ID!, $input: InvoicePatch!) {
+  updateInvoice(id: $id, input: $input) {
+    id
+    invoiceNumber
+    status
+    updatedAt
+  }
+}
+
+# Mark invoice paid/cancelled
+mutation MarkInvoicePaid($id: ID!) {
+  markInvoicePaid(id: $id) {
+    id
+    status
+    updatedAt
+  }
+}
+
+mutation CancelInvoice($id: ID!) {
+  cancelInvoice(id: $id) {
+    id
+    status
+    updatedAt
+  }
+}
+
+# Add/Update/Remove invoice items
+mutation AddInvoiceItem($invoiceId: ID!, $input: InvoiceItemInput!) {
+  addInvoiceItem(invoiceId: $invoiceId, input: $input) {
+    id
+    description
+    quantity
+    rateCents
+    amountCents
+  }
+}
+
+mutation UpdateInvoiceItem($id: ID!, $input: InvoiceItemPatch!) {
+  updateInvoiceItem(id: $id, input: $input) {
+    id
+    description
+    quantity
+    rateCents
+    amountCents
+  }
+}
+
+mutation RemoveInvoiceItem($id: ID!) {
+  removeInvoiceItem(id: $id)
+}
